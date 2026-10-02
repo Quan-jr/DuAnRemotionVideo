@@ -9,9 +9,10 @@ Dự án này là hệ thống tự động sản xuất video ngắn dạng d�
 
 ## 🚀 2. PHẢN XẠ MẶC ĐỊNH KHI BẮT ĐẦU PHIÊN LÀM VIỆC (QUICK START)
 Mỗi khi khởi động lại dự án hoặc người dùng nhắn *"Bắt đầu"*, *"Túc trực"* hoặc kiểm tra hệ thống:
-1. Kiểm tra xem `python webhook_server.py` (cổng 8000) có đang chạy không.
-2. Kiểm tra thư mục `D:\vidv2\pending\`.
-3. Thiết lập lịch hẹn giờ (Cron schedule `* * * * *` qua công cụ `schedule`) để tự động quét thư mục `pending/` mỗi phút một lần.
+1. Kiểm tra và khởi chạy `python webhook_server.py` (cổng 8000) nếu chưa chạy.
+2. Kiểm tra và khởi chạy ngrok với static domain cố định: `ngrok http 8000 --url otter-saturday-viewing.ngrok-free.dev` (URL luôn cố định vĩnh viễn: `https://otter-saturday-viewing.ngrok-free.dev`).
+3. Kiểm tra thư mục `D:\vidv2\pending\`.
+4. Thiết lập lịch hẹn giờ (Cron schedule `* * * * *` qua công cụ `schedule`) để tự động quét thư mục `pending/` mỗi phút một lần.
 
 ---
 
@@ -130,11 +131,12 @@ Chạy lệnh `npm run check` trong thư mục video. Bắt buộc:
 Chạy `npm run render`. Video sẽ được xuất ra thư mục `renders/{slug}.mp4`.
 
 ### Bước 9: Bàn giao thành phẩm vào `completed/`
-1. Copy file `renders/{slug}.mp4` sang `D:\vidv2\completed\{slug}.mp4`.
-2. Di chuyển file bài viết `.html` tương ứng từ `D:\vidv2\pending\` sang `D:\vidv2\completed\`.
+1. Đảm bảo 2 thư mục con tồn tại: `D:\vidv2\completed\vid\` và `D:\vidv2\completed\html\`.
+2. Copy file `renders/{slug}.mp4` sang `D:\vidv2\completed\vid\{slug}.mp4`.
+3. Di chuyển file bài viết `.html` tương ứng từ `D:\vidv2\pending\` sang `D:\vidv2\completed\html\{slug}.html`.
 
 ### Bước 10: Báo cáo kết quả
-Thông báo ngắn gọn cho người dùng về video vừa hoàn thành (tên video, thời lượng, dung lượng, đường dẫn đến thư mục [completed/](file:///D:/vidv2/completed)).
+Thông báo ngắn gọn cho người dùng về video vừa hoàn thành (tên video, thời lượng, dung lượng, đường dẫn đến [completed/vid/](file:///D:/vidv2/completed/vid) và [completed/html/](file:///D:/vidv2/completed/html)).
 
 ---
 

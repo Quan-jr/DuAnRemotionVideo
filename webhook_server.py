@@ -17,6 +17,7 @@ import re
 import sys
 import time
 import unicodedata
+import argparse
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -53,7 +54,8 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/plain; charset=utf-8')
         self.end_headers()
         pending = os.listdir(PENDING_DIR) if os.path.exists(PENDING_DIR) else []
-        self.wfile.write(f"🎬 Video Builder Webhook — port {PORT}\nPending: {pending}".encode())
+        port = self.server.server_port
+        self.wfile.write(f"🎬 Video Builder Webhook — port {port}\nPending: {pending}".encode())
 
     def do_POST(self):
         try:
@@ -110,9 +112,14 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Webhook Server")
+    parser.add_argument('-port', '--port', '-p', type=int, default=8000, help="Port to listen on (default: 8000)")
+    args, _ = parser.parse_known_args()
+    port = args.port
+
     os.makedirs(PENDING_DIR, exist_ok=True)
-    httpd = ThreadingHTTPServer(('', PORT), WebhookHandler)
-    print(f"🚀 Webhook Server: http://localhost:{PORT}")
+    httpd = ThreadingHTTPServer(('', port), WebhookHandler)
+    print(f"🚀 Webhook Server: http://localhost:{port}")
     print(f"📁 Pending dir   : {PENDING_DIR}")
     print(f"   n8n POST JSON : {{\"content\": \"<html>...\", \"slug\": \"ten-video\"}}")
     print("Ctrl+C để dừng\n")
