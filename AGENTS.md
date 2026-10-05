@@ -93,6 +93,8 @@ Dùng Python script chạy ngầm `edge-tts` với giọng `vi-VN-HoaiMyNeural` 
   - Màu chữ: Chữ chính xám đậm `#1f2937`, chữ phụ `#6b7280`.
   - Nền Card/Badge: `#f3f4f6`, `#f8fafc`, viền `#e5e7eb`, bóng đổ nhẹ `box-shadow: 0 4px 20px rgba(0,0,0,0.06)`.
 - **Typography:** Font Google `'Inter', sans-serif`.
+- **Quy tắc viết hoa (Sentence Case - Bắt buộc):** Chỉ viết hoa chữ cái đầu tiên của câu/tiêu đề, các từ phía sau đều viết chữ thường (ví dụ: *"Vì sao FTC điều tra Anthropic và OpenAI?"*, *"3 lớp kiểm soát rủi ro then chốt"*, *"Quyền truy cập dữ liệu"*). Tuyệt đối KHÔNG viết hoa mọi chữ cái đầu (Title Case: *"Vì Sao FTC..."*) và KHÔNG viết hoa toàn bộ (ALL CAPS), ngoại trừ tên thương hiệu/từ viết tắt chuẩn (TeraX, AI, CEO, FTC...).
+- **Quy tắc thương hiệu và CTA (Tuyệt đối KHÔNG dùng "terax.ai"):** Ở bất kỳ đâu trong video (chữ hiển thị trên màn hình, nút CTA, footer, hay giọng đọc), **tuyệt đối BỎ hoàn toàn chữ `terax.ai` / `Terax.AI`**. Nút CTA ở Frame 6 thay vì để `terax.ai` hãy đổi thành `Tìm hiểu ngay`, `Theo dõi ngay` hoặc `Bắt đầu ngay`. Trong giọng đọc lồng tiếng cũng tuyệt đối không đọc *"chấm AI"*.
 - **Cấu trúc Audio bắt buộc (Tránh lỗi `media_missing_id`):**
   Mỗi thẻ `<audio class="clip">` **bắt buộc phải có thuộc tính `id`**:
   ```html
@@ -127,12 +129,15 @@ Chạy lệnh `npm run check` trong thư mục video. Bắt buộc:
 - **0 errors, 0 warnings**.
 - Nếu có cảnh báo về id audio hoặc duration, sửa lại ngay trước khi render.
 
-### Bước 8: Render Video (`npm run render`)
-Chạy `npm run render`. Video sẽ được xuất ra thư mục `renders/{slug}.mp4`.
+### Bước 8: Render Video (`npm run render`) & Ghép Outtro mặc định
+1. Chạy `npm run render`. Video sẽ được xuất ra thư mục `renders/{slug}.mp4`.
+2. Ghép nối video outtro mặc định (`D:\game\outtro.mp4`) vào cuối video vừa render:
+   `python D:\vidv2\append_outtro.py "renders/{slug}.mp4"`
+   *(Script sẽ tự động chuẩn hóa 1080x1920 @ 30fps và ghép outtro vào cuối video).*
 
 ### Bước 9: Bàn giao thành phẩm vào `completed/`
 1. Đảm bảo 2 thư mục con tồn tại: `D:\vidv2\completed\vid\` và `D:\vidv2\completed\html\`.
-2. Copy file `renders/{slug}.mp4` sang `D:\vidv2\completed\vid\{slug}.mp4`.
+2. Copy file `renders/{slug}.mp4` (đã có outtro) sang `D:\vidv2\completed\vid\{slug}.mp4`.
 3. Di chuyển file bài viết `.html` tương ứng từ `D:\vidv2\pending\` sang `D:\vidv2\completed\html\{slug}.html`.
 
 ### Bước 10: Báo cáo kết quả
