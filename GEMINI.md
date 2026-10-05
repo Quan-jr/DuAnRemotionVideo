@@ -16,7 +16,7 @@ Mỗi khi khởi động lại dự án hoặc người dùng nhắn *"Bắt đ�
 
 ---
 
-## 🎙️ 3. QUY CHUẨN GIỌNG ĐỌC AI & CHUẨN HÓA SỐ / TIỀN TỆ (BẮT BUỘC)
+## 🎙️ 3. QUY CHUẨN GIỌNG ĐỌC AI & CHUẨN HÓA KỊCH BẢN ÂM THANH (BẮT BUỘC)
 
 ### 3.1. Động cơ TTS & Nhân bản giọng (VieNeu-TTS)
 * Sử dụng module `D:\vidv2\generate_tts_vieneu.py` (chạy với Python trong virtualenv `D:\vidv2\venv`).
@@ -24,36 +24,43 @@ Mỗi khi khởi động lại dự án hoặc người dùng nhắn *"Bắt đ�
 * **Tốc độ đọc chuẩn (Speed):** Luôn cố định ở **`speed = 1.09`** (vừa vặn, rõ chữ, nhịp điệu cuốn hút, giữ nguyên cao độ tự nhiên).
 * **Nhịp ngắt mệnh đề:** Rút ngắn khoảng lặng giữa các mệnh đề xuống **`0.06s - 0.08s`** để lời đọc dứt khoát, liền mạch.
 
-### 3.2. Quy tắc đọc số, tiền tệ, phần trăm & thuật ngữ tài chính
-Khi viết kịch bản âm thanh 6 frames để đưa vào mô hình TTS, **BẮT BUỘC phải chuyển đổi toàn bộ số và ký hiệu thành chữ tiếng Việt chuẩn xác**:
+### 3.2. Quy tắc viết kịch bản âm thanh: 100% THUẦN CHỮ (KHÔNG DÙNG KÝ TỰ ĐẶC BIỆT / GẠCH NỐI)
+Khi viết kịch bản đưa vào mô hình TTS, **BẮT BUỘC phải chuyển đổi toàn bộ số, ký hiệu và từ viết tắt thành chữ tiếng Việt thuần túy, tuyệt đối không chèn ký tự lạ (`-`, `/`, `%`, `+`, `&`...)**:
+
+* **Từ viết tắt & Chức danh (Cách nhau bằng khoảng trắng, KHÔNG dùng gạch nối `-`):**
+  * `CEO` $\to$ viết thành: `C E O` (hoặc `giám đốc điều hành`)
+  * `CFO` $\to$ viết thành: `C F O` (hoặc `giám đốc tài chính`)
+  * `COO` $\to$ viết thành: `C O O` (hoặc `giám đốc vận hành`)
+  * `PNJ` $\to$ viết thành: `P N J`
+  * `FTC` $\to$ viết thành: `F T C`
+  * `AI` $\to$ viết thành: `A I` (hoặc `trí tuệ nhân tạo`)
+  * `TeraX` $\to$ đọc chuẩn `Te ra X` (tuyệt đối không đọc `.ai` hay `chấm AI`).
+  * `VnExpress` $\to$ viết thành: `Vn Express`
+  * `VnDirect` $\to$ viết thành: `Vn Direct`
+
 * **Số tiền / Giá trị lớn:**
   * `4.200 tỷ đồng` $\to$ viết thành: `bốn nghìn hai trăm tỷ đồng`
   * `24.750 đồng` $\to$ viết thành: `hai mươi tư nghìn bảy trăm năm mươi đồng`
   * `7.071 tỷ đồng` $\to$ viết thành: `bảy nghìn không trăm bảy mươi mốt tỷ đồng`
   * `12.665 tỷ` $\to$ viết thành: `mười hai nghìn sáu trăm sáu mươi lăm tỷ đồng`
   * `41,5 tỷ đồng` $\to$ viết thành: `bốn mươi mốt phẩy năm tỷ đồng`
+
 * **Phần trăm:**
+  * `11,6%` $\to$ viết thành: `mười một phẩy sáu phần trăm`
   * `25%` $\to$ viết thành: `hai mươi lăm phần trăm`
   * `70%` $\to$ viết thành: `bảy mươi phần trăm`
-  * `40%` $\to$ viết thành: `bốn mươi phần trăm`
+  * `9,78%` $\to$ viết thành: `chín phẩy bảy mươi tám phần trăm`
+
 * **Tỷ số tài chính & Phép đo:**
   * `P/E 12,17 lần` $\to$ viết thành: `P trên E mười hai phẩy mười bảy lần`
-  * `EPS` $\to$ viết thành: `E-P-S`
-  * `ROA`, `ROE` $\to$ viết thành: `R-O-A`, `R-O-E`
+  * `EPS` $\to$ viết thành: `E P S`
+  * `ROA`, `ROE` $\to$ viết thành: `R O A`, `R O E`
+
 * **Thời gian & Số thứ tự:**
   * `phiên 1/10` $\to$ viết thành: `phiên ngày một tháng mười`
   * `9 tháng` $\to$ viết thành: `chín tháng`
   * `phiên thứ 4` $\to$ viết thành: `phiên thứ tư`
   * `chuỗi 8 phiên` $\to$ viết thành: `chuỗi tám phiên`
-* **Từ viết tắt & Tên riêng:**
-  * `PNJ` $\to$ viết thành: `P-N-J`
-  * `FTC` $\to$ viết thành: `F-T-C`
-  * `CEO` $\to$ viết thành: `C-E-O` hoặc `giám đốc điều hành`
-  * `CFO` $\to$ viết thành: `C-F-O` hoặc `giám đốc tài chính`
-  * `AI` $\to$ viết thành: `A-I` hoặc `trí tuệ nhân tạo`
-  * `VnExpress` $\to$ viết thành: `Vn-Express`
-  * `VnDirect` $\to$ viết thành: `Vn-Direct`
-  * `TeraX` $\to$ đọc chuẩn `Te-ra-X` (tuyệt đối không đọc `.ai` hay `chấm AI`).
 
 ---
 
