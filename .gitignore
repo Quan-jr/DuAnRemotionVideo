@@ -20,6 +20,8 @@ ENV/
 dist/
 build/
 .cache/
+.hf_home/
+test_*.wav
 *.log
 
 # OS & IDE
