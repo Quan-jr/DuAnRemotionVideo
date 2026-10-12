@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sơ Đồ Kiến Trúc Hệ Thống - TeraX Video Automation (vidv2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #F97316;
+      --primary-dark: #EA580C;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 35px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title span {
+      color: var(--primary);
+    }
+
+    .diagram-wrapper {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 25px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .diagram-wrapper .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .feature-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .feature-box h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .feature-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge">TeraX Video Automation • Architecture</div>
+      <h1>Sơ Đồ Kiến Trúc Hệ Thống vidv2</h1>
+      <p class="subtitle">Quy trình tự động hóa sản xuất video ngắn 9:16 (1080x1920) chuẩn doanh nghiệp từ bài viết HTML đến thành phẩm video MP4.</p>
+    </header>
+
+    <!-- SƠ ĐỒ 1: TỔNG QUAN LUỒNG DỮ LIỆU -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span>01.</span> Luồng Xử Lý Dữ Liệu Khép Kín (End-to-End Pipeline)</h2>
+      </div>
+      <div class="diagram-wrapper">
+        <div class="mermaid">
+flowchart TD
+    classDef client fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef server fill:#1e293b,stroke:#f97316,stroke-width:2px,color:#fff;
+    classDef queue fill:#1e293b,stroke:#eab308,stroke-width:2px,color:#fff;
+    classDef ai fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef tts fill:#1e293b,stroke:#ec4899,stroke-width:2px,color:#fff;
+    classDef render fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff;
+    classDef output fill:#1e293b,stroke:#06b6d4,stroke-width:2px,color:#fff;
+
+    N8N[Webhook Client / n8n]:::client -->|HTTP POST| NGROK[ngrok Static Domain]:::client
+    NGROK -->|Cổng 8000| WH[webhook_server.py]:::server
+    WH -->|Trích xuất slug & lưu file| PENDING[(pending/{slug}.html)]:::queue
+
+    PENDING -->|Quét định kỳ / Kích hoạt| AGENT[Antigravity Agent / AI Builder]:::ai
+
+    subgraph Phase_AI ["Phân Tích & Kịch Bản"]
+        AGENT -->|Chia thành 6 phân cảnh| FRAMES[Kịch bản 6 Frames]:::ai
+        AGENT -->|Chuẩn hóa 100% thuần chữ tiếng Việt| SCRIPT[Kịch bản TTS chuẩn hóa]:::ai
+    end
+
+    subgraph Phase_TTS ["Động Cơ VieNeu-TTS (Local)"]
+        SCRIPT --> TTS[generate_tts_vieneu.py]:::tts
+        REF[(voice_samples/BA-enhanced-v2.wav)] -->|Prompt Slicing 3.0s-10.5s| TTS
+        TTS -->|De-mud EQ & Speed 1.09x| AUDIOS[public/audio/ 01.mp3 -> 06.mp3]:::tts
+    end
+
+    subgraph Phase_Render ["GSAP Animation & Hyperframes"]
+        AUDIOS --> SYNC[update_durations.py (ffprobe)]:::render
+        SYNC -->|Khớp mili-giây từng frame| HTML[index.html (GSAP Timelines)]:::render
+        HTML --> CHECK[hyperframes check]:::render
+        CHECK --> RENDER[hyperframes render]:::render
+    end
+
+    RENDER --> VID[(completed/vid/{slug}.mp4)]:::output
+    PENDING --> ARCHIVE[(completed/html/{slug}.html)]:::output
+    VID --> PG[(PostgreSQL sync_to_postgres.py)]:::output
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="feature-box">
+          <h4>100% Chạy Local & Khép Kín</h4>
+          <p>Không dùng bất kỳ API ngoài tốn phí nào. Mô hình VieNeu-TTS chạy cục bộ trên GPU/CPU, sinh file âm thanh chất lượng cao và chuyển đổi ngay trên máy.</p>
+        </div>
+        <div class="feature-box">
+          <h4>Đồng Bộ Âm Thanh Khớp Mili-giây</h4>
+          <p>Script <code>update_durations.py</code> quét độ dài thực tế của từng đoạn voice lồng tiếng bằng <code>ffprobe</code> để thiết lập thuộc tính GSAP tự động chuẩn xác tuyệt đối.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SƠ ĐỒ 2: CẤU TRÚC CHUẨN 6 FRAMES -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span>02.</span> Chuẩn Thiết Kế Video 6 Phân Cảnh (6-Frame Architecture)</h2>
+      </div>
+      <div class="diagram-wrapper">
+        <div class="mermaid">
+graph LR
+    classDef frame fill:#1e293b,stroke:#f97316,stroke-width:2px,color:#fff;
+    classDef cta fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff;
+
+    F1["Frame 1 (01 / 06)<br/><b>Hook / Nỗi Đau</b><br/>Câu hỏi giật gân, bối cảnh kịch tính"]:::frame
+    --> F2["Frame 2 (02 / 06)<br/><b>Khái Niệm Cốt Lõi</b><br/>Định nghĩa điểm nghẽn trọng tâm"]:::frame
+    --> F3["Frame 3 (03 / 06)<br/><b>3 Trụ Cột / Giải Pháp</b><br/>3 thẻ Card đánh số 1, 2, 3"]:::frame
+    --> F4["Frame 4 (04 / 06)<br/><b>Chỉ Số & Cảnh Báo</b><br/>Con số thực tế kèm lưu ý rủi ro"]:::frame
+    --> F5["Frame 5 (05 / 06)<br/><b>3 Bước Hành Động</b><br/>Quy trình thực thi: Bước 01, 02, 03"]:::frame
+    --> F6["Frame 6 (06 / 06)<br/><b>Call To Action</b><br/>Đúc kết giá trị & Nút 'Tìm hiểu ngay'"]:::cta
+        </div>
+      </div>
+    </div>
+
+    <!-- SƠ ĐỒ 3: KIẾN TRÚC PHẦN MỀM & MÔ HÌNH THÀNH PHẦN -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span>03.</span> Phân Tầng Kiến Trúc Hệ Thống (Layered Architecture)</h2>
+      </div>
+      <div class="diagram-wrapper">
+        <div class="mermaid">
+flowchart TB
+    classDef layer fill:#0f172a,stroke:#475569,stroke-width:1px,color:#cbd5e1;
+    classDef item fill:#1e293b,stroke:#f97316,stroke-width:1.5px,color:#fff;
+
+    subgraph L1 ["TẦNG GIAO TIẾP MẠNG (Ingestion Layer)"]
+        W1[webhook_server.py : Cổng 8000]:::item
+        W2[ngrok Tunnel : otter-saturday-viewing.ngrok-free.dev]:::item
+        W3[tunnel_supervisor.py : Tự động duy trì kết nối]:::item
+    end
+
+    subgraph L2 ["TẦNG GIỌNG ĐỌC AI (Neural Speech Layer)"]
+        V1[Mô hình VieNeu-TTS @ D:\vidv2\venv]:::item
+        V2[Voice Cloning : BA-enhanced-v2.wav]:::item
+        V3[Bộ lọc EQ : Cắt 320Hz, Tăng 3.8kHz & 9kHz, Speed 1.09x]:::item
+    end
+
+    subgraph L3 ["TẦNG HIỆU ỨNG & DÀN DỰNG (Motion & Render Layer)"]
+        H1[Hyperframes CLI : CLI Engine]:::item
+        H2[GSAP Timelines : Căn chỉnh nhịp hiệu ứng]:::item
+        H3[Design System TeraX : Màu cam #F97316 & Trắng #ffffff]:::item
+        H4[update_durations.py : Quét ffprobe đồng bộ]:::item
+    end
+
+    subgraph L4 ["TẦNG DỮ LIỆU & LƯU TRỮ (Storage & Data Layer)"]
+        S1[Hàng đợi : pending/ {slug}.html]:::item
+        S2[Thành phẩm : completed/vid/{slug}.mp4]:::item
+        S3[Lưu trữ bài viết : completed/html/{slug}.html]:::item
+        S4[sync_to_postgres.py : Cơ sở dữ liệu PostgreSQL]:::item
+    end
+
+    L1 --> L2
+    L2 --> L3
+    L3 --> L4
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© TeraX Video Automation System • Antigravity Agent Generated</p>
+    </footer>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0f172a',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#f97316',
+        lineColor: '#f97316',
+        secondaryColor: '#334155',
+        tertiaryColor: '#0f172a'
+      }
+    });
+  </script>
+</body>
+</html>
