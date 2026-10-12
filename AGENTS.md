@@ -20,7 +20,12 @@ Mỗi khi khởi động lại dự án hoặc người dùng nhắn *"Bắt đ�
 
 ### 3.1. Động cơ TTS & Nhân bản giọng (VieNeu-TTS)
 * Sử dụng module `D:\vidv2\generate_tts_vieneu.py` (chạy với Python trong virtualenv `D:\vidv2\venv`).
-* **Voice Cloning:** Tự động phát hiện và nhân bản giọng đọc từ file mẫu trong thư mục `D:\vidv2\voice_samples\` (ví dụ: `sample.wav`, `sample.mp3`...) thông qua tham số `ref_audio`. Nếu không có file mẫu thì dùng preset `Mai Anh` hoặc `Hải Đăng`.
+* **Voice Cloning chuẩn doanh nghiệp:** Tự động phát hiện và nhân bản giọng đọc từ file mẫu trong thư mục `D:\vidv2\voice_samples\` (file chuẩn mặc định: `BA-enhanced-v2.wav`).
+* **Thuật toán Prompt Slicing & Neural Sampling:**
+  * Tự động trích xuất đoạn sóng tối ưu (3.0s - 10.5s) từ file mẫu dài để triệt tiêu toàn bộ tạp âm mở đầu.
+  * Cố định thông số giải mã thần kinh: `temperature = 0.65`, `top_p = 0.90`, `top_k = 20`, `denoise = False` để giọng đọc đĩnh đạc, ấm, không bị nhiễu hay rè kim loại.
+* **Bộ lọc làm trong giọng (Vocal Clarity & De-mud EQ):**
+  * Tự động cắt bỏ dải tần khàn đục 320Hz (-3.5dB) và tăng cường dải hiện diện 3.8kHz (+3.5dB) & 9kHz (+2.0dB) giúp giọng đọc trong trẻo, sáng rõ từng chữ, chuẩn phát thanh viên.
 * **Tốc độ đọc chuẩn (Speed):** Luôn cố định ở **`speed = 1.09`** (vừa vặn, rõ chữ, nhịp điệu cuốn hút, giữ nguyên cao độ tự nhiên).
 * **Nhịp ngắt mệnh đề:** Rút ngắn khoảng lặng giữa các mệnh đề xuống **`0.06s - 0.08s`** để lời đọc dứt khoát, liền mạch.
 
@@ -145,9 +150,10 @@ D:\vidv2\venv\Scripts\python -c "import generate_tts_vieneu; texts = [...]; gene
   - Nền Card/Badge: `#f8fafc`, `#fff7ed`, viền `#e2e8f0` hoặc `#fed7aa`.
 - **Typography:** Font Google `'Inter', sans-serif`.
 - **Quy tắc viết hoa (Sentence Case - Bắt buộc):** Chỉ viết hoa chữ cái đầu tiên của câu/tiêu đề, các từ phía sau đều viết chữ thường (ví dụ: *"Vốn hóa PNJ bốc hơi hơn 4.200 tỷ, bài học quản trị là gì?"*). Tuyệt đối KHÔNG viết hoa mọi chữ cái đầu (Title Case) và KHÔNG viết hoa toàn bộ (ALL CAPS), trừ từ viết tắt chuẩn (TeraX, AI, CEO, CFO, PNJ...).
-- **Header & Footer bắt buộc cho cả 6 frames:**
-  - **Header:** `.brand-badge` (chủ đề) + `.code-tag` (tag phân loại).
-  - **Footer:** `.footer-brand` (`TeraX Insights` / `TeraX Platform`) + `.footer-page` (`01 / 06` $\to$ `06 / 06`).
+- **Header & Footer chuẩn cho cả 6 frames:**
+  - **Header (Góc trên bên trái):** `.brand-badge` MẶC ĐỊNH LUÔN CHỈ ĐỂ CHỮ **`TeraX`** (`<div class="brand-badge"><span>TeraX</span></div>`). Tuyệt đối không thêm `Insights`, `Governance`, `Platform` hay tên chủ đề nào khác ở badge này.
+  - **Header (Góc trên bên phải):** `.code-tag` (tag phân loại, ví dụ `#RuiRo`, `#Taichinh`).
+  - **Footer (Góc dưới):** XÓA TOÀN BỘ chữ ở góc dưới bên trái (`.footer-brand`, `.footer-channel`), tuyệt đối không lặp lại chữ thương hiệu lặp lại ở footer. Góc dưới bên phải hiển thị số frame `.footer-page` (`01 / 06` $\to$ `06 / 06`).
 - **Nút CTA ở Frame 6:** Đặt là `Tìm hiểu ngay` (tuyệt đối không dùng `terax.ai`).
 - **Thẻ container gốc và Audio:**
   ```html
@@ -168,14 +174,13 @@ Chạy script `python update_durations.py` trong thư mục video để `ffprobe
 Chạy lệnh `npx hyperframes check` trong thư mục video. Bắt buộc:
 - **0 errors, 0 warnings** (pass contrast WCAG AA).
 
-### Bước 8: Render Video (`npx hyperframes render`) & Ghép Outtro
+### Bước 8: Render Video (`npx hyperframes render`)
 1. Đảm bảo set `$env:TEMP="D:\dev-cache\temp"; $env:TMP="D:\dev-cache\temp"`.
 2. Chạy `npx hyperframes render`. Video xuất ra tại `renders/{slug}_*.mp4`.
-3. Ghép nối outtro:
-   `python D:\vidv2\append_outtro.py "renders/{slug}_*.mp4"`
+3. **Quy tắc bất biến:** **KHÔNG GHÉP OUTTRO** ở cuối video (tuyệt đối không gọi `append_outtro.py` hay ghép đoạn kết video).
 
 ### Bước 9: Bàn giao thành phẩm vào `completed/`
-1. Copy file video đã ghép outtro sang `D:\vidv2\completed\vid\{slug}.mp4`.
+1. Copy file video rendered trực tiếp từ `renders/{slug}_*.mp4` sang `D:\vidv2\completed\vid\{slug}.mp4`.
 2. Di chuyển file bài viết `.html` sang `D:\vidv2\completed\html\{slug}.html`.
 
 ### Bước 10: Báo cáo kết quả

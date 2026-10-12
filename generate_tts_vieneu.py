@@ -43,9 +43,14 @@ def find_sample_voice(custom_path=None):
     return None
 
 def convert_to_mp3(input_wav, output_mp3, speed=1.09):
-    """Chuyển đổi file WAV sang MP3 bằng ffmpeg kết hợp điều chỉnh tốc độ nói tự nhiên."""
+    """Chuyển đổi file WAV sang MP3 bằng ffmpeg kết hợp bộ lọc làm trong giọng (Vocal Clarity & De-mud EQ) và tốc độ chuẩn."""
     try:
-        filter_str = f"atempo={speed}"
+        # Bộ lọc làm trong giọng:
+        # - highpass 90Hz: triệt tiêu tiếng ù nền
+        # - equalizer 320Hz (-3.5dB): triệt tiêu tiếng khàn đục/ồm ồm
+        # - equalizer 3800Hz (+3.5dB): làm sáng và trong trẻo giọng đọc
+        # - equalizer 9000Hz (+2.0dB): tăng độ chi tiết và tự nhiên
+        filter_str = f"highpass=f=90,equalizer=f=320:width_type=q:width=1.2:g=-3.5,equalizer=f=3800:width_type=q:width=1.0:g=3.5,equalizer=f=9000:width_type=q:width=0.8:g=2.0,atempo={speed}"
         subprocess.run([
             "ffmpeg", "-y", "-i", input_wav,
             "-filter:a", filter_str,
@@ -106,7 +111,27 @@ def generate_audio_frames(output_dir, frames_text, voice_sample=None, preset_voi
     
     if sample_path:
         print(f"🎙️ Nhân bản (Clone) chính xác từ file mẫu: {sample_path}")
-        infer_kwargs = {"ref_audio": sample_path}
+        # Tự động trích xuất đoạn chuẩn 6-8s nếu file mẫu quá dài để tối ưu độ trong trẻo
+        clean_ref_path = sample_path
+        try:
+            wav_data, sr = sf.read(sample_path)
+            if len(wav_data) / sr > 12.0:
+                if wav_data.ndim > 1:
+                    wav_data = wav_data.mean(axis=1)
+                optimal_slice = wav_data[int(3.0 * sr) : int(10.5 * sr)]
+                temp_slice_path = os.path.join(output_dir, "_clean_ref_prompt.wav")
+                sf.write(temp_slice_path, optimal_slice, sr)
+                clean_ref_path = temp_slice_path
+        except Exception:
+            pass
+
+        infer_kwargs = {
+            "ref_audio": clean_ref_path,
+            "denoise": False,
+            "temperature": 0.65,
+            "top_p": 0.90,
+            "top_k": 20
+        }
     else:
         print(f"ℹ️ Không có file mẫu, sử dụng giọng đọc có sẵn: {preset_voice}")
         infer_kwargs = {"voice": preset_voice}
